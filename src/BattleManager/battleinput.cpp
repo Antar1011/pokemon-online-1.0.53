@@ -111,9 +111,9 @@ void BattleInput::dealWithCommandInfo(QDataStream &in, uchar command, int spot)
     }
     case BC::BeginTurn:
     {
-        int turn;
-        in >> turn;
-        output<BattleEnum::Turn>(turn);
+        int turn; bool vgc; int time;
+        in >> turn >> vgc >> time;
+        output<BattleEnum::Turn>(turn,vgc,time);
         break;
     }
     case BC::ChangeHp:

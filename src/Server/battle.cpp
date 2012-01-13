@@ -26,6 +26,7 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     //qDebug() <<"Created battlesituation " << this;
     publicId() = id;
     timer = NULL;
+    startedAtTotal = QAtomicInt(time(NULL));
     conf.avatar[0] = p1.avatar();
     conf.avatar[1] = p2.avatar();
     conf.setTeam(0, new TeamBattle(p1.team()));
@@ -53,8 +54,16 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     weatherCount = -1;
 
     /* timers for battle timeout */
-    timeleft[0] = 5*60;
-    timeleft[1] = 5*60;
+    if (vgc)
+    {
+	timeleft[0] = 60;
+	timeleft[1] = 60;
+    }
+    else
+    {
+	timeleft[0] = 5*60;
+	timeleft[1] = 5*60;
+    }
     timeStopped[0] = true;
     timeStopped[1] = true;
 
@@ -71,6 +80,9 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     if (p1.tier() == p2.tier()) {
         tier() = p1.tier();
     }
+    vgc = false;
+    if ((tier() == "VGC 2012") || (tier() == "VGC 2011") || (tier() == "VGC 2010") || (tier() == "VGC 2009"))
+	vgc = true;
     currentForcedSleepPoke[0] = -1;
     currentForcedSleepPoke[1] = -1;
     p1.addBattle(publicId());
@@ -235,6 +247,9 @@ void BattleSituation::engageBattle()
     }
 
     qDebug() << "Engaging battle " << this << ", calling plugins";
+    
+    startedAtTotal = QAtomicInt(time(NULL));
+
     /* Plugin call */
     callp(BP::battleStarting);
 
@@ -546,6 +561,7 @@ void BattleSituation::rearrangeTeams()
 void BattleSituation::beginTurn()
 {
     turn() += 1;
+
     /* Resetting temporary variables */
     for (int i = 0; i < numberOfSlots(); i++) {
         turnMemory(i).clear();
@@ -1159,7 +1175,7 @@ void BattleSituation::requestChoices()
         yield();
     }
 
-    notify(All, BeginTurn, All, turn());
+    notify(All, BeginTurn, All, turn(), vgc, int(totalTime));
 
     /* Now all the players gonna do is analyzeChoice(int player) */
 }
@@ -1765,10 +1781,15 @@ void BattleSituation::stopClock(int player, bool broadCoast)
         if (!timeStopped[player]) {
             timeStopped[player] = true;
             timeleft[player] = std::max(0,timeleft[player] - (QAtomicInt(time(NULL)) - startedAt[player]));
+	    totalTime = 15*60 - (QAtomicInt(time(NULL)) - startedAtTotal);
+	    printf("%d\n",int(totalTime));
         }
 
         if (broadCoast) {
-            timeleft[player] = std::min(int(timeleft[player]+20), 5*60);
+            if (vgc)
+		timeleft[player] = 60;
+	    else
+            	timeleft[player] = std::min(int(timeleft[player]+20), 5*60);
             notify(All,ClockStop,player,quint16(timeleft[player]));
         } else {
             notify(player, ClockStop, player, quint16(timeleft[player]));
@@ -1795,7 +1816,7 @@ int BattleSituation::timeLeft(int player)
   ****************************************/
 void BattleSituation::timerEvent(QTimerEvent *)
 {
-    if (timeLeft(Player1) <= 0 || timeLeft(Player2) <= 0) {
+    if ((timeLeft(Player1) <= 0) || (timeLeft(Player2) <= 0) || (vgc && (totalTime <= 0))){
         schedule(); // the battle is finished, isn't it?
     }
 }
@@ -4528,6 +4549,19 @@ void BattleSituation::testWin()
             endBattle(Win, Player1, Player2);
         }
     }
+    if (vgc && (totalTime <= 0))
+    {
+	printf("Excellent! We got here.");
+	if (c1 > c2) {
+		endBattle(Win, Player1, Player2);
+	} else if (c1 < c2) {
+		endBattle(Win, Player2, Player1);
+	} else {
+		endBattle(Tie, Player1, Player2);
+	} 
+
+    }
+
 }
 
 void BattleSituation::changePP(int player, int move, int PP)
