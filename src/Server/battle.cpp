@@ -1784,7 +1784,6 @@ void BattleSituation::stopClock(int player, bool broadCoast)
             timeStopped[player] = true;
             timeleft[player] = std::max(0,timeleft[player] - (QAtomicInt(time(NULL)) - startedAt[player]));
 	    totalTime = 15*60 - (QAtomicInt(time(NULL)) - startedAtTotal);
-	    printf("%d\n",int(totalTime));
         }
 
         if (broadCoast) {
