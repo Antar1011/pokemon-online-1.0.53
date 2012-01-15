@@ -54,6 +54,10 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     weather = 0;
     weatherCount = -1;
 
+    if (p1.tier() == p2.tier()) {
+        tier() = p1.tier();
+    }
+
     vgc = false;
     if ((tier() == "VGC 2012") || (tier() == "VGC 2011") || (tier() == "VGC 2010") || (tier() == "VGC 2009"))
 	vgc = true;
@@ -80,10 +84,6 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
         numberOfSlots() = 6;
     } else {
         numberOfSlots() = 2;
-    }
-
-    if (p1.tier() == p2.tier()) {
-        tier() = p1.tier();
     }
     
     currentForcedSleepPoke[0] = -1;
