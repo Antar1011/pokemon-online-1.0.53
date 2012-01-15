@@ -22,6 +22,7 @@ typedef BattlePStorage BP;
 Q_DECLARE_METATYPE(QList<int>)
 
 BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c, int id, PluginManager *pluginManager)
+    : /*spectatorMutex(QMutex::Recursive), */team1(p1.team()), team2(p2.team())
 {
     //qDebug() <<"Created battlesituation " << this;
     publicId() = id;
@@ -223,6 +224,20 @@ void BattleSituation::start(ContextSwitcher &ctx)
         notify(Player1, PointEstimate, Player1, qint8(firstChange.first), qint8(firstChange.second));
         notify(Player2, PointEstimate, Player2, qint8(secondChange.first), qint8(secondChange.second));
     }
+
+    QString month = QDate::currentDate().toString("yyyy-MM");
+    QString date = QDate::currentDate().toString("yyyy-MM-dd");
+    QString time = QTime::currentTime().toString("hh'h'mm'm'ss's'");
+    QString id0 = QString::number(myid[0]);
+    QString id1 = QString::number(myid[1]);
+    QDir d("");
+
+    if(!d.exists(QString("logs/usage/%1/%2/%3/").arg(month,tier(),date))) {
+    	d.mkpath(QString("logs/usage/%1/%2/%3/").arg(month,tier(),date));
+    }
+    usageLog.setFileName(QString("logs/usage/%6/%5/%1/%2-%3-%4").arg(date, time, id0, id1, tier(),month));
+    usageLog.open(QIODevice::WriteOnly);
+    writeUsageLog();
 
     notify(All, Rated, Player1, rated());
     notify(All, BlankMessage,0);
@@ -4918,4 +4933,19 @@ bool BattleSituation::isThereUproar()
 void BattleSituation::BasicMoveInfo::reset()
 {
     memset(this, 0, sizeof(*this));
+}
+
+void BattleSituation::writeUsageLog()
+{
+    QTextStream log(&usageLog);
+    log << ratings[0] << "\n" << ratings[1] << "\n";
+    for (int i = 0; i < 6; i++) {
+        log << team1.poke(i).num().toPokeRef() << "\n" << team1.poke(i).item() << "\n" <<  team1.poke(i).nature() << "\n" << team1.poke(i).ability() << "\n";
+        for (int j = 0; j < 4; j++) { log << team1.poke(i).move(j).num() << "\n"; }
+        for (int j = 0; j < 6; j++) { log << team1.poke(i).evs()[j] << "\n"; }
+        log << team2.poke(i).num().toPokeRef() << "\n" << team2.poke(i).item() << "\n" <<  team2.poke(i).nature() << "\n" << team2.poke(i).ability() << "\n";
+        for (int j = 0; j < 4; j++) { log << team2.poke(i).move(j).num() << "\n"; }
+        for (int j = 0; j < 6; j++) { log << team2.poke(i).evs()[j] << "\n"; }
+    }
+    usageLog.close();
 }

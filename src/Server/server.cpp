@@ -961,7 +961,7 @@ void Server::recvPM(int src, int dest, const QString &mess)
 {
     if (playerLoggedIn(dest)) {
         Player *d = player(dest);
-
+//if we need to block PMs with zalgo text, we do it here
         d->acquireRoughKnowledgeOf(player(src));
         d->relay().sendPM(src, mess);
     }

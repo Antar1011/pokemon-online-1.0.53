@@ -351,6 +351,7 @@ private:
     QList<bool> couldMove;
     QList<QPointer<Player> > pendingSpectators;
 
+    TeamBattle team1, team2;
     int ratings[2];
 
     /* timers */
