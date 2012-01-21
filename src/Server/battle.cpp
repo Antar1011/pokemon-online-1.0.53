@@ -4947,9 +4947,11 @@ void BattleSituation::writeUsageLog()
     for (int i = 0; i < 6; i++) {
         log << team1.poke(i).num().toPokeRef() << "\n" << team1.poke(i).item() << "\n" <<  team1.poke(i).nature() << "\n" << team1.poke(i).ability() << "\n";
         for (int j = 0; j < 4; j++) { log << team1.poke(i).move(j).num() << "\n"; }
+	for (int j = 0; j < 6; j++) { log << team1.poke(i).dvs()[j] << "\n"; }
         for (int j = 0; j < 6; j++) { log << team1.poke(i).evs()[j] << "\n"; }
         log << team2.poke(i).num().toPokeRef() << "\n" << team2.poke(i).item() << "\n" <<  team2.poke(i).nature() << "\n" << team2.poke(i).ability() << "\n";
         for (int j = 0; j < 4; j++) { log << team2.poke(i).move(j).num() << "\n"; }
+	for (int j = 0; j < 6; j++) { log << team1.poke(i).dvs()[j] << "\n"; }
         for (int j = 0; j < 6; j++) { log << team2.poke(i).evs()[j] << "\n"; }
     }
     usageLog.close();
