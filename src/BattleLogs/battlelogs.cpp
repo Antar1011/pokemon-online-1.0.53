@@ -124,7 +124,10 @@ BattleLogsPlugin::BattleLogsPlugin(BattleInterface *b, bool raw, bool plain) : c
 
 BattleLogsPlugin::~BattleLogsPlugin()
 {
+<<<<<<< HEAD
     QMutexLocker l(&m);
+=======
+>>>>>>> coyotte508/master
     //if (started) {
         QString date = QDate::currentDate().toString("yyyy-MM-dd");
         QString time = QTime::currentTime().toString("hh'h'mm'm'ss's'");

@@ -13,6 +13,7 @@
 # If you need to edit global qmake constants use
 # src/Shared/Common.pri for that.
 
+CONFIG += qt debug
 TEMPLATE = subdirs
 CONFIG += ordered
 
