@@ -1711,7 +1711,7 @@ struct MMBeatUp : public MM {
     }
 
     static void bh(int s, int, BS &b) {
-        if (b.poke(s, b.repeatCount()).status() != Pokemon::Fine) {
+        if (b.poke(b.player(s), b.repeatCount()).status() != Pokemon::Fine) {
             turn(b,s)["HitCancelled"] = true;
         } else {
             tmove(b,s).power = 5 + (PokemonInfo::BaseStats(fpoke(b,s).id).baseAttack()/10);
@@ -2142,6 +2142,7 @@ struct MMFastGuard : public MM
     *DetermineAttackPossible -- poke: just say if the poke is supposed to be able to attack, regarless of the the move used (like attracted pokes won't attack)
     *MovePossible -- turn: before attacking, say if the move is possible or not (like when a move just got blocked by encore, taunt,disable)
     *MovesPossible -- poke, battle: at the beginning of the turn, tells if each move is possible or not
+
     *AfterKoedByStraightAttack -- poke: when koed by an attack
     *BlockTurnEffects -- poke: Called before calling effects for a turn event, to see if it's blocked. Used by Substitute
     *AttackSomehowFailed -- turn, only offensive moves: When an attack fails, or misses, there may be something to do (jump kick, rollout, ..)
