@@ -251,7 +251,7 @@ void Analyzer::dealWithCommand(const QByteArray &commandline)
             in >> id;
             QString s;
             in >> s;
-            emit battleChat(id,s);
+            emit battleChat(id,QString::fromLatin1(s.toLatin1()));
             break;
         }
     case BattleFinished:
@@ -357,7 +357,7 @@ void Analyzer::dealWithCommand(const QByteArray &commandline)
             qint32 id;
             QString str;
             in >> id >> str;
-            emit battleSpectateChat(id, str);
+            emit battleSpectateChat(id, QString::fromLatin1(str.toLatin1()));
             break;
         }
     case LadderChange:
