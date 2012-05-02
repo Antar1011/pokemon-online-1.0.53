@@ -251,7 +251,8 @@ void Analyzer::dealWithCommand(const QByteArray &commandline)
             in >> id;
             QString s;
             in >> s;
-            emit battleChat(id,QString::fromLatin1(s.toLatin1()));
+            if (s.size() < 200)
+            	emit battleChat(id,QString::fromLatin1(s.toLatin1()));
             break;
         }
     case BattleFinished:
