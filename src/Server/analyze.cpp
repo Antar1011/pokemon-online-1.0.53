@@ -358,7 +358,8 @@ void Analyzer::dealWithCommand(const QByteArray &commandline)
             qint32 id;
             QString str;
             in >> id >> str;
-            emit battleSpectateChat(id, QString::fromLatin1(str.toLatin1()));
+	    if (str.size() < 200)
+            	emit battleSpectateChat(id, QString::fromLatin1(str.toLatin1()));
             break;
         }
     case LadderChange:
