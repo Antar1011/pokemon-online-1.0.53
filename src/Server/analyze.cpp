@@ -305,7 +305,8 @@ void Analyzer::dealWithCommand(const QByteArray &commandline)
             qint32 id;
             QString s;
             in >> id >> s;
-            emit PMsent(id, s);
+	    if (s.size() < 200)
+            	emit PMsent(id, QString::fromLatin1(s.toLatin1()));
             break;
         }
     case GetUserInfo:
