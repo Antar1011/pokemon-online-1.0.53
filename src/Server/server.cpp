@@ -177,10 +177,12 @@ void Server::start(){
         if (!listenSuccess)
         {
             printLine(tr("Unable to listen to port %1").arg(port));
-        } else {
-            printLine(tr("Starting to listen to port %1").arg(port));
+	    system("sleep 10");
+	    exit(1);
         }
 
+
+	printLine(tr("Starting to listen to port %1").arg(port));
         mymapper->setMapping(&*server(i), i);
 #ifndef SFML_SOCKETS
         connect(server(i), SIGNAL(newConnection()), mymapper, SLOT(map()));
@@ -1781,16 +1783,16 @@ void Server::atServerShutDown() {
     ::exit(0);
 #endif
     // On linux, threads need to be cleared or the server may be left hanging...
-//    TierMachine::destroy();
-//    SecurityManager::destroy();
+    TierMachine::destroy();
+    SecurityManager::destroy();
 
-//    connect(&battleThread, SIGNAL(finished()), this, SLOT(deleteLater()));
-//    battleThread.finish();
-//    exit(0);
+    connect(&battleThread, SIGNAL(finished()), this, SLOT(deleteLater()));
+    battleThread.finish();
+    exit(0);
 
     //The above always hangs now for some reason on linux, so here we go
-    int *x = NULL;
-    *x += 1;
+    /*int *x = NULL;
+    *x += 1;*/
 
 }
 
