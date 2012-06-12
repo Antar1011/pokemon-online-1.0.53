@@ -86,7 +86,7 @@ protected:
     /* Todo: expand following macros */
     start(SendBack, int spot; bool silent) end(spot, silent)
     start(UseAttack, int spot; int attack; bool silent) end(spot, attack, silent)
-    start(Turn, int turn; bool vgc; int time) end(turn, vgc, time)
+    start(Turn, int turn) end(turn)
     start(NewHp, int spot; int newHp) end(spot, newHp)
     start(Hits, int spot; int count) end(spot, count)
     start(Effectiveness, int spot; int effectiveness) end(spot, effectiveness)

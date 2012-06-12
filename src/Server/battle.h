@@ -75,7 +75,6 @@ public:
 
     int gen() const {return conf.gen;}
     int mode() const {return conf.mode;}
-    bool vgc;
     quint32 clauses() const {return conf.clauses;}
     /*
 	Below Player is either 1 or 0, aka the spot of the id.
@@ -356,9 +355,7 @@ private:
 
     /* timers */
     QAtomicInt timeleft[2];
-    QAtomicInt totalTime;
     QAtomicInt startedAt[2];
-    QAtomicInt startedAtTotal;
     bool timeStopped[2];
     QBasicTimer *timer;
     /*.*/
@@ -732,6 +729,7 @@ void BattleSituation::notify(int player, int command, int who, const T1& param1,
     out.setVersion(QDataStream::Qt_4_7);
 
     out << uchar(command) << qint8(who) << param1 << param2 << param3;
+
     emitCommand(who, player, tosend);
 }
 
