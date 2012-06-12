@@ -139,12 +139,10 @@ void BattleClientLog::onUseAttack(int spot, int attack, bool silent)
     }
 }
 
-void BattleClientLog::onBeginTurn(int turn, bool vgc, int time)
+void BattleClientLog::onBeginTurn(int turn)
 {
     printLine("Space", "");
-    printHtml("BeginTurn", toBoldColor(tr("Start of turn %1!").arg(turn), Qt::blue));
-    if (vgc)
-	printHtml("VGCTime", toBoldColor(tr("%1 minutes, %2 seconds remain...").arg(time/60).arg(time%60), Qt::red));
+    printHtml("BeginTurn", toBoldColor(tr("Start of turn %1").arg(turn), Qt::blue));
 }
 
 void BattleClientLog::onHpChange(int spot, int newHp)
