@@ -54,10 +54,6 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     weather = 0;
     weatherCount = -1;
 
-    vgc = false;
-    if ((tier() == "VGC 2012") || (tier() == "VGC 2011") || (tier() == "VGC 2010") || (tier() == "VGC 2009"))
-	vgc = true;
-
     /* timers for battle timeout */
     if (vgc)
     {
@@ -85,7 +81,9 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     if (p1.tier() == p2.tier()) {
         tier() = p1.tier();
     }
-    
+    vgc = false;
+    if ((tier() == "VGC 2012") || (tier() == "VGC 2011") || (tier() == "VGC 2010") || (tier() == "VGC 2009"))
+	vgc = true;
     currentForcedSleepPoke[0] = -1;
     currentForcedSleepPoke[1] = -1;
     p1.addBattle(publicId());
