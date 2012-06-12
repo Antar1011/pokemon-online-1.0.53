@@ -65,8 +65,8 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     /* timers for battle timeout */
     if (vgc)
     {
-	timeleft[0] = 90;
-	timeleft[1] = 90;
+	timeleft[0] = 60;
+	timeleft[1] = 60;
     }
     else
     {
@@ -75,8 +75,6 @@ BattleSituation::BattleSituation(Player &p1, Player &p2, const ChallengeInfo &c,
     }
     timeStopped[0] = true;
     timeStopped[1] = true;
-
-    totalTime = 15*60;
 
     rated() = c.rated;
 
@@ -1106,7 +1104,6 @@ void BattleSituation::endTurnStatus(int player)
             return;
 
         notify(All, StatusMessage, player, qint8(HurtBurn));
-	//if (vgc) startedAtTotal -= 3;
         //HeatProof: burn does only 1/16, also Gen 1 only does 1/16
         inflictDamage(player, poke(player).totalLifePoints()/(8*(1+(hasWorkingAbility(player,Ability::Heatproof) || gen() == 1))), player);
         break;
@@ -1115,7 +1112,6 @@ void BattleSituation::endTurnStatus(int player)
         if (hasWorkingAbility(player, Ability::PoisonHeal)) {
             sendAbMessage(45,0,player,0,Pokemon::Poison);
             healLife(player, poke(player).totalLifePoints()/8);
-	    //if (vgc) startedAtTotal -= 3; This is wrong--what is at full HP?
         } else {
             if (hasWorkingAbility(player, Ability::MagicGuard)) {
                 /* Toxic still increases under magic guard */
@@ -1124,7 +1120,6 @@ void BattleSituation::endTurnStatus(int player)
                 return;
             }
             notify(All, StatusMessage, player, qint8(HurtPoison));
-	    //if (vgc) startedAtTotal -= 3;
 
             if (poke(player).statusCount() == 0)
                 inflictDamage(player, poke(player).totalLifePoints()/ (gen() == 1 ? 16 : 8), player); // 1/16 in gen 1
